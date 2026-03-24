@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Academic Reports</title>
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/styles.css" />
+</h:head>
+<h:body>
+    <div class="layout">
+        <div class="header">
+            <div class="title">Academic Performance Report</div>
+            <div class="nav"><a href="#{request.contextPath}/pages/dashboard.xhtml">Dashboard</a></div>
+        </div>
+        <div class="card">
+            <h:form>
+                <h:selectOneMenu value="#{reportBean.selectedStudentId}">
+                    <f:selectItems value="#{reportBean.students}" var="student" itemValue="#{student.id}" itemLabel="#{student.studentNumber} - #{student.fullName}" />
+                </h:selectOneMenu>
+                <h:commandButton value="Generate" action="#{reportBean.generate}" styleClass="button" />
+            </h:form>
+        </div>
+        <div class="card">
+            <p><strong>Student:</strong> #{reportBean.report.studentName}</p>
+            <p><strong>Student ID:</strong> #{reportBean.report.studentId}</p>
+            <p><strong>Program:</strong> #{reportBean.report.program}</p>
+            <p><strong>Semester:</strong> #{reportBean.report.semester}</p>
+            <p><strong>Year:</strong> #{reportBean.report.yearOfStudy}</p>
+            <p><strong>CGPA:</strong> #{reportBean.report.cgpa}</p>
+        </div>
+        <div class="table-wrapper">
+            <h:dataTable value="#{reportBean.report.courses}" var="course" styleClass="table">
+                <h:column><f:facet name="header">Course Code</f:facet>#{course.courseCode}</h:column>
+                <h:column><f:facet name="header">Course Title</f:facet>#{course.courseTitle}</h:column>
+                <h:column><f:facet name="header">Credit Hours</f:facet>#{course.creditHours}</h:column>
+                <h:column><f:facet name="header">Grade</f:facet>#{course.grade}</h:column>
+                <h:column><f:facet name="header">Grade Point</f:facet>#{course.gradePoint}</h:column>
+            </h:dataTable>
+        </div>
+    </div>
+</h:body>
+</html>

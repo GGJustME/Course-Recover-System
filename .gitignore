@@ -1,0 +1,14 @@
+# Ignore Claude notes
+CLAUDE.md
+
+# Environment
+.env
+
+# Node
+node_modules/
+
+# Java / Maven
+target/
+
+# Logs
+*.log

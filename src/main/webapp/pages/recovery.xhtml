@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Recovery Plans</title>
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/styles.css" />
+</h:head>
+<h:body>
+    <div class="layout">
+        <div class="header">
+            <div class="title">Recovery Plans</div>
+            <div class="nav"><a href="#{request.contextPath}/pages/dashboard.xhtml">Dashboard</a></div>
+        </div>
+        <div class="table-wrapper">
+            <h:dataTable value="#{recoveryBean.recoveryPlans}" var="plan" styleClass="table">
+                <h:column><f:facet name="header">Student</f:facet>#{plan.student.fullName}</h:column>
+                <h:column><f:facet name="header">Course</f:facet>#{plan.course.courseCode} - #{plan.course.courseTitle}</h:column>
+                <h:column><f:facet name="header">Recommendation</f:facet>#{plan.recommendation}</h:column>
+                <h:column><f:facet name="header">Status</f:facet>#{plan.status}</h:column>
+                <h:column><f:facet name="header">Milestones</f:facet>#{plan.milestones.size()}</h:column>
+            </h:dataTable>
+        </div>
+    </div>
+</h:body>
+</html>
