@@ -1,26 +1,103 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Users</title>
+    <title>User Management</title>
     <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/styles.css" />
 </h:head>
 <h:body>
     <div class="layout">
         <div class="header">
             <div class="title">User Management</div>
-            <div class="nav"><a href="#{request.contextPath}/pages/dashboard.xhtml">Dashboard</a></div>
+            <div class="nav"><h:outputLink value="#{request.contextPath}/pages/dashboard.xhtml">Dashboard</h:outputLink></div>
         </div>
-        <div class="table-wrapper">
-            <h:dataTable value="#{userBean.users}" var="user" styleClass="table">
-                <h:column><f:facet name="header">Username</f:facet>#{user.username}</h:column>
-                <h:column><f:facet name="header">Full Name</f:facet>#{user.fullName}</h:column>
-                <h:column><f:facet name="header">Email</f:facet>#{user.email}</h:column>
-                <h:column><f:facet name="header">Role</f:facet>#{user.role}</h:column>
-                <h:column><f:facet name="header">Status</f:facet>#{user.accountStatus}</h:column>
-            </h:dataTable>
-        </div>
+        
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true" />
+            
+            <p:toolbar styleClass="mb-4">
+                <p:toolbarGroup>
+                    <p:commandButton value="New User" icon="pi pi-plus" actionListener="#{userBean.prepareNewUser}"
+                                     update=":dialogForm:manage-user-content" oncomplete="PF('userDialog').show()"
+                                     styleClass="ui-button-success" style="margin-right: .5rem">
+                        <p:resetInput target=":dialogForm:manage-user-content" />
+                    </p:commandButton>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <p:dataTable id="dt-users" widgetVar="dtUsers" var="user" value="#{userBean.users}"
+                         reflow="true" styleClass="table" rowKey="#{user.id}" paginator="true" rows="10">
+                <p:column headerText="Username">
+                    <h:outputText value="#{user.username}" />
+                </p:column>
+                <p:column headerText="Full Name">
+                    <h:outputText value="#{user.fullName}" />
+                </p:column>
+                <p:column headerText="Email">
+                    <h:outputText value="#{user.email}" />
+                </p:column>
+                <p:column headerText="Role">
+                    <h:outputText value="#{user.role}" />
+                </p:column>
+                <p:column headerText="Status">
+                    <h:outputText value="#{user.status}" />
+                </p:column>
+                
+                <p:column headerText="Actions" exportable="false">
+                    <p:commandButton icon="pi pi-pencil" update=":dialogForm:manage-user-content"
+                                     oncomplete="PF('userDialog').show()"
+                                     styleClass="edit-button rounded-button ui-button-success" process="@this">
+                        <f:setPropertyActionListener value="#{user}" target="#{userBean.selectedUser}" />
+                    </p:commandButton>
+                    
+                    <p:commandButton icon="#{user.status == 'ACTIVE' ? 'pi pi-ban' : 'pi pi-check'}" 
+                                     actionListener="#{userBean.toggleStatus(user)}"
+                                     update="dt-users :form:messages"
+                                     styleClass="ui-button-#{user.status == 'ACTIVE' ? 'danger' : 'success'} rounded-button" process="@this"
+                                     title="#{user.status == 'ACTIVE' ? 'Deactivate' : 'Activate'}">
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <h:form id="dialogForm">
+            <p:dialog header="User Details" showEffect="fade" modal="true" widgetVar="userDialog" responsive="true">
+                <p:outputPanel id="manage-user-content" class="ui-fluid">
+                    <p:outputPanel rendered="#{not empty userBean.selectedUser}">
+                        <div class="field">
+                            <p:outputLabel for="username">Username</p:outputLabel>
+                            <p:inputText id="username" value="#{userBean.selectedUser.username}" required="true" />
+                        </div>
+                        <div class="field">
+                            <p:outputLabel for="password">Password</p:outputLabel>
+                            <p:password id="password" value="#{userBean.selectedUser.password}" required="#{empty userBean.selectedUser.id}" toggleMask="true"/>
+                        </div>
+                        <div class="field">
+                            <p:outputLabel for="fullName">Full Name</p:outputLabel>
+                            <p:inputText id="fullName" value="#{userBean.selectedUser.fullName}" required="true"/>
+                        </div>
+                        <div class="field">
+                            <p:outputLabel for="email">Email</p:outputLabel>
+                            <p:inputText id="email" value="#{userBean.selectedUser.email}" required="true"/>
+                        </div>
+                        <div class="field">
+                            <p:outputLabel for="role">Role</p:outputLabel>
+                            <p:selectOneMenu id="role" value="#{userBean.selectedUser.role}" required="true">
+                                <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{userBean.roles}" />
+                            </p:selectOneMenu>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Save" icon="pi pi-check" actionListener="#{userBean.saveUser}" update=":dialogForm:manage-user-content :form:messages" process="manage-user-content @this" />
+                    <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('userDialog').hide()" class="ui-button-secondary" type="button" />
+                </f:facet>
+            </p:dialog>
+        </h:form>
     </div>
 </h:body>
 </html>

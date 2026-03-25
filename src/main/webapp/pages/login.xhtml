@@ -1,27 +1,37 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
 <h:head>
     <title>CRS Login</title>
     <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/styles.css" />
+    <style>
+        .login-container { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f6f9; }
+        .login-panel { width: 400px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .field { margin-bottom: 1.5rem; }
+    </style>
 </h:head>
 <h:body>
-    <div class="form-panel">
-        <h2>Course Recovery System</h2>
-        <p class="subtle">Sign in as Course Administrator or Academic Officer.</p>
-        <h:form>
-            <h:messages globalOnly="true" style="color:#b91c1c;"/>
-            <div>
-                <label>Username</label>
-                <h:inputText value="#{loginBean.username}" style="width:100%;margin:8px 0 16px;padding:10px;"/>
-            </div>
-            <div>
-                <label>Password</label>
-                <h:inputSecret value="#{loginBean.password}" style="width:100%;margin:8px 0 16px;padding:10px;"/>
-            </div>
-            <h:commandButton value="Login" action="#{loginBean.login}" styleClass="button"/>
-        </h:form>
-        <p class="subtle">Demo accounts: admin/admin123 and officer/officer123</p>
+    <div class="login-container">
+        <p:panel header="Course Recovery System - Login" styleClass="login-panel">
+            <h:form>
+                <p:messages id="messages" showDetail="true" closable="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                
+                <div class="field">
+                    <p:outputLabel for="username" value="Username"/>
+                    <p:inputText id="username" value="#{loginBean.username}" required="true" style="width: 100%;"/>
+                </div>
+                
+                <div class="field">
+                    <p:outputLabel for="password" value="Password"/>
+                    <p:password id="password" value="#{loginBean.password}" required="true" style="width: 100%;" toggleMask="true"/>
+                </div>
+                
+                <p:commandButton value="Login" action="#{loginBean.login}" style="width: 100%;" styleClass="ui-button-primary" />
+            </h:form>
+        </p:panel>
     </div>
 </h:body>
 </html>
